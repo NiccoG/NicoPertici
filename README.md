@@ -1,10 +1,8 @@
-## Build a Simple Web Page that Listens for Twitch Chat
+# Momento Quizzone:
 
-* [x] Setup
-* [x] Listen for messages in channel
-* [x] Listen for !start-count
-  * Count all messages from unique users that have the number 1 in them
-* [x] Display total count on webpage
-* [x] Display name of all users that sent a message
-* [x] Listen for !stop-count
-* [x] Use text to speech to say the count out loud
+## Funzionamento
+
+Usa il comando `#startquiz` per dare il via al quizzone più pazzo di twitch!
+Ascolta per bene ka domanda fatta da NicoPertici durante la live, pensaci bene e rispondi in chat seguendo la sintassi `#risposta`e attendi lo scadere del tempo.
+Con il comando `#endquiz`si può interrompere il quizzone e mostrare i vincitori.
+Buon divertimento!
