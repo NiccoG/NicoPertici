@@ -3,7 +3,7 @@ const usersElement = document.querySelector('#users');
 const statusElement = document.querySelector('#status');
 
 const params = new URLSearchParams(window.location.search);
-const channel = nicopertici; //params.get('channel') || 'codinggarden';
+const channel = 'nicopertici'; //params.get('channel') || 'codinggarden';
 const client = new tmi.Client({
   connection: {
     secure: true,
@@ -95,8 +95,10 @@ client.on('message', (wat, tags, message, self) => {
     
     arr=Object.keys(users).map(key=>[key,users[key]]);
     arr.sort((a,b)=>a[1]-b[1]);
-    for(let key in arr){
-      sR += arr[key][0]+": " + arr[key][1] + ", ";
+    
+    sR = arr[0][0]+": " + arr[0][1];
+    for(let i=1; i < arr.length; i++){
+      sR += ", " + arr[i][0]+": " + arr[i][1];
     }
     usersElement.textContent = sR;
   }
