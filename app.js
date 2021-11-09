@@ -63,9 +63,12 @@ client.on('message', (wat, tags, message, self) => {
         
       }
 
-      if(vincitori.length==1) document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
-        else{
-          document.getElementById("vincitore").innerHTML+="I vincitori sono:\n"
+      if(vincitori.length==1)
+        document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
+      else if(vincitori.length==0){
+        document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
+      } else {
+        document.getElementById("vincitore").innerHTML+="I vincitori sono:\n"
           for(let i in vincitori){
             document.getElementById("vincitore").innerHTML+=vincitori[i][0]+"\n"
           }
