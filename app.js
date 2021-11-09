@@ -2,7 +2,7 @@ const countElement = document.querySelector('#count');
 const usersElement = document.querySelector('#users');
 const statusElement = document.querySelector('#status');
 
-const params = new URLSearchParams(window.location.search);
+//const params = new URLSearchParams(window.location.search);
 const channel = 'nicopertici'; //params.get('channel') || 'codinggarden';
 const client = new tmi.Client({
   connection: {
@@ -11,7 +11,7 @@ const client = new tmi.Client({
   },
   channels: ['NicoPertici'],
 });
-let possMex=[`Leggendo i messaggi di Eagleman...`,`Grodando...`,`Leggendo la chat degli MVP...`,`Deh so il Cippe...`]
+let possMex=[`Leggendo i messaggi di Eagleman...`,`Grodando...`,`Leggendo la chat degli MVP...`,`Deh so il Cippe...`,"Nam1d4 ha regalato una sub..."]
 client.connect().then(() => {
   statusElement.textContent = possMex[Math.floor(Math.random()*possMex.length)];
 });
@@ -37,9 +37,6 @@ client.on('message', (wat, tags, message, self) => {
       let risposta= document.getElementById("groda").value;
       
       for(let i=0; i<arr.length; i++){
-        console.log(i);
-        console.log(arr.length);
-        
         if(Number(arr[i][1]) > Number(risposta) && i!=0){
           let j = i;
           check = Number(arr[i-1][1]);
@@ -53,7 +50,6 @@ client.on('message', (wat, tags, message, self) => {
         else if( i == arr.length-1 ){
           let j=i;
           check=Number(arr[i][1]);
-          console.log("a");
           while( j >= 0 && check == Number(arr[j][1]) ){
             vincitori.push(arr[j]);
             j--;
@@ -63,11 +59,13 @@ client.on('message', (wat, tags, message, self) => {
         
       }
 
-      if(vincitori.length==1)
-        document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
-      else if(vincitori.length==0){
+      
+      if(Number(vincitori[0][1])>Number(risposta)){
         document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
-      } else {
+      }
+      else if(vincitori.length==1)
+        document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
+      else {
         document.getElementById("vincitore").innerHTML+="I vincitori sono:\n"
           for(let i in vincitori){
             document.getElementById("vincitore").innerHTML+=vincitori[i][0]+"\n"
