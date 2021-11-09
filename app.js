@@ -88,11 +88,11 @@ client.on('message', (wat, tags, message, self) => {
   var sR=""
   const regE=/^[#]\d+$/gm;
 
-  if (listeningForCount && (message).match(regE)) {
-    
+  if (listeningForCount && (message).match(regE) && !(tags.username in users)) {
+
     users[tags.username] = (message).substring(1);
     // display current count page.
-    countElement.textContent = "Numero risposte: " + Object.keys(users).length;
+    countElement.textContent = "Numero risposte: " + Object.keys(users).length; 
     
     arr=Object.keys(users).map(key=>[key,users[key]]);
     arr.sort((a,b)=>a[1]-b[1]);
