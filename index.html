@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Las Vegas Quiz</title>
+  <link rel="stylesheet" href="https://ez-css.now.sh">
+</head>
+<body>
+  <input id="groda" type="text" placeholder="Inserisci qua la risposta prima di #endquiz"></input>
+  <div>
+    <center>
+      <!-- <marquee><p>Type 1 in the chat!</p></marquee> 
+      <em>(broadcaster only)</em>
+      <br />-->
+      <code>#startquiz | #endquiz | #reset</code>
+      
+      <br />
+      <br />
+    </center>
+    <small id="status"></small>
+    <h1 id="count">Aspettando l'inizio del quiz</h1>
+    <h3 id="users"></h3>
+  </div>
+  <p id="vincitore" style="color:blueviolet"></p>
+  <script src="tmi.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
