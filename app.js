@@ -48,13 +48,16 @@ function sToTable(){
 }
 */
 function vittoria(elem){
-  if (elem==[]){
+  if (elem.length==0){
     document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
     return;
-  } 
+  }
+  else{
   document.getElementById("vincitore").innerHTML="Il vincitore è "+elem[0]+" con "+elem[1];
   if(elem[0] in classs) classs[elem[0]]++
   else  classs[elem[0]]=1
+  }
+  updateClass();
 }
 function updateClass(){
   CString="";
@@ -70,14 +73,25 @@ function reset(){
   vincitori=[];
   document.getElementById("vincitore").innerHTML="";
 }
-function endQuiz(){
+function endQuiz(tags){
+  arr=Object.keys(users).map(key=>[key,users[key],tags[timer]]);
+  arr.sort((a,b)=>b[2]-a[2]);
+  arr.sort((a,b)=>a[1]-b[1]);
+    
+  sR = arr[0][0]+": " + arr[0][1];
+  for(let i=1; i < arr.length; i++){
+    sR += ", " + arr[i][0]+": " + arr[i][1];
+  }
+  usersElement.textContent = sR;
   check=0;
   listeningForCount = false;
-  let risposta= document.getElementById("groda").value; 
-  
+  risposta= document.getElementById("groda").value; 
   for(let i=0; i<arr.length; i++){
-    if(Number(arr[i][1])>Number(risposta))
-      if(i==0) vittoria([]);
+    if(Number(arr[i][1])>Number(risposta)){
+      if(i==0){
+        vittoria([]);
+        return;
+      } 
       else{
         check=Number(arr[i-1][1])
         let j=i-1;
@@ -85,7 +99,9 @@ function endQuiz(){
           j--
         }
         vittoria(arr[j])
+        return;
       }
+    }
     else if(i==arr.length-1){
       check=Number(arr[i][1])
       let j=i;
@@ -95,7 +111,9 @@ function endQuiz(){
       }
       console.log(j)
       vittoria(arr[j]);
+      return;
     } 
+  
     /*
     if(Number(arr[i][1]) > Number(risposta) && i!=0){
       
@@ -140,7 +158,7 @@ function endQuiz(){
     document.getElementById("vincitore").innerHTML+="con "+vincitori[0][1]+"\n"
   }
   */
-  updateClass();
+  
 }
 function startQuiz(){
   listeningForCount = true;
@@ -150,15 +168,6 @@ function responses(tags,message){
   var sR="";
   users[tags.username] = (message).substring(1);
   countElement.textContent = "Numero risposte: " + Object.keys(users).length; 
-  arr=Object.keys(users).map(key=>[key,users[key],tags[timer]]);
-  arr.sort((a,b)=>b[2]-a[2]);
-  arr.sort((a,b)=>a[1]-b[1]);
-    
-  sR = arr[0][0]+": " + arr[0][1];
-  for(let i=1; i < arr.length; i++){
-    sR += ", " + arr[i][0]+": " + arr[i][1];
-  }
-  usersElement.textContent = sR;
 }
 
 let listeningForCount = false;
@@ -167,6 +176,7 @@ let arr=[];
 let vincitori=[];
 let check;
 let classs={};
+let risposta;
 const timer="tmi-sent-ts"
 function main(){
 
@@ -177,12 +187,12 @@ function main(){
   client.on('message', (wat, tags, message, self) => {
     if (self) return;
     const { username } = tags;
-    if (username.toLowerCase() === channel || tags.mod) {
+    if (username.toLowerCase() === channel || tags.mod || tags.username==="pow3rmiopadre") {
       //comandi per Nico
       if (message === '#startquiz') {
         startQuiz();
       } else if (message === '#endquiz') {
-        endQuiz();
+        endQuiz(tags);
         // say count out loud.
         //const sayCount = new SpeechSynthesisUtterance(Object.keys(users).length);
         //window.speechSynthesis.speak(sayCount);
