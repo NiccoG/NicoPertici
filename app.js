@@ -48,7 +48,10 @@ function sToTable(){
 }
 */
 function vittoria(elem){
-  if (elem==[]) document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
+  if (elem==[]){
+    document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
+    return;
+  } 
   document.getElementById("vincitore").innerHTML="Il vincitore è "+elem[0]+" con "+elem[1];
   if(elem[0] in classs) classs[elem[0]]++
   else  classs[elem[0]]=1
@@ -75,8 +78,24 @@ function endQuiz(){
   for(let i=0; i<arr.length; i++){
     if(Number(arr[i][1])>Number(risposta))
       if(i==0) vittoria([]);
-      else vittoria(arr[i-1])
-    else if(i==arr.length-1) vittoria(arr[i]);
+      else{
+        check=Number(arr[i-1][1])
+        let j=i-1;
+        while(Number(j!=0&&arr[j-1][1])==check){
+          j--
+        }
+        vittoria(arr[j])
+      }
+    else if(i==arr.length-1){
+      check=Number(arr[i][1])
+      let j=i;
+      while(Number(j!=0&&arr[j-1][1])==check){
+        console.log("sono qua",j);
+        j--
+      }
+      console.log(j)
+      vittoria(arr[j]);
+    } 
     /*
     if(Number(arr[i][1]) > Number(risposta) && i!=0){
       
@@ -132,7 +151,8 @@ function responses(tags,message){
   users[tags.username] = (message).substring(1);
   countElement.textContent = "Numero risposte: " + Object.keys(users).length; 
   arr=Object.keys(users).map(key=>[key,users[key],tags[timer]]);
-  arr.sort((a,b)=>a[1]!=b[1]?a[1]-b[1]:b[2]-a[2]);
+  arr.sort((a,b)=>b[2]-a[2]);
+  arr.sort((a,b)=>a[1]-b[1]);
     
   sR = arr[0][0]+": " + arr[0][1];
   for(let i=1; i < arr.length; i++){
@@ -155,10 +175,9 @@ function main(){
   });
 
   client.on('message', (wat, tags, message, self) => {
-    
     if (self) return;
     const { username } = tags;
-    //if (username.toLowerCase() === channel) {
+    if (username.toLowerCase() === channel || tags.mod) {
       //comandi per Nico
       if (message === '#startquiz') {
         startQuiz();
@@ -170,7 +189,7 @@ function main(){
       } else if (message === '#reset') {
         reset();
       }
-    //}
+    }
 
     const regE=/^[#]\d+$/gm;
 
@@ -179,8 +198,7 @@ function main(){
     }
   });
 }
-// ecco cosa intendevo la logica dentro ogni if conviene metterle in funzioni apposite così da snellire tutta
-// la parte degli if
+
 
 
 
