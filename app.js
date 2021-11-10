@@ -1,7 +1,6 @@
 const countElement = document.querySelector('#count');
 const usersElement = document.querySelector('#users');
 const statusElement = document.querySelector('#status');
-
 //const params = new URLSearchParams(window.location.search);
 const channel = 'nicopertici'; //params.get('channel') || 'codinggarden';
 const client = new tmi.Client({
@@ -14,9 +13,46 @@ const client = new tmi.Client({
 
 let possMex=[`Leggendo i messaggi di Eagleman...`,`Grodando...`,`Leggendo la chat degli MVP...`,`Deh so il Cippe...`,"Nam1d4 ha regalato una sub..."]
 
-client.connect().then(() => {
-  statusElement.textContent = possMex[Math.floor(Math.random()*possMex.length)];
-});
+function textToClasss(text){
+  classs={}
+  let arr=text.split("\n");
+  for(let i=0;i<arr.length-1;i++){  
+    arr[i]=arr[i].split(": ");
+    classs[arr[i][0]]=arr[i][1];
+  }
+  updateClass();
+}
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+function doe(){
+  download("classifica.txt",CString);
+}
+// Start file download.
+
+/*
+function sToTable(){
+  let arr=CString.split("");
+  let str=arr.map((e)=>e==":"?": ":e==";"?"</br>":e).join('');
+  document.getElementById("class").innerHTML=str;
+}
+*/
+function updateClass(){
+  CString="";
+  for(let nome in classs){
+    CString+=nome+": "+classs[nome]+"\n";
+  }
+}
 function reset(){
   countElement.textContent = 'Aspettando l\'inizio del quiz';
   usersElement.textContent = '';
@@ -55,15 +91,21 @@ function endQuiz(){
 
   if(Number(vincitori[0][1])>Number(risposta))
     document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
-  else if(vincitori.length==1)
+  else if(vincitori.length==1){
     document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
+    if(vincitori[0][0] in classs) classs[vincitori[0][0]]++
+    else  classs[vincitori[0][0]]=1
+  }
   else {
     document.getElementById("vincitore").innerHTML+="I vincitori sono:\n"
     for(let i in vincitori){
       document.getElementById("vincitore").innerHTML+=vincitori[i][0]+"\n"
+      if(vincitori[i][0] in classs) classs[vincitori[i][0]]++
+      else  classs[vincitori[i][0]]=1
     }
     document.getElementById("vincitore").innerHTML+="con "+vincitori[0][1]+"\n"
   }
+  updateClass();
 }
 function startQuiz(){
   listeningForCount = true;
@@ -88,32 +130,39 @@ let users = {};
 let arr=[];
 let vincitori=[];
 let check;
+let classs={};
 
-client.on('message', (wat, tags, message, self) => {
+function main(){
 
-  if (self) return;
-  const { username } = tags;
-  //if (username.toLowerCase() === channel) {
-    //comandi per Nico
-    if (message === '#startquiz') {
-      startQuiz();
-    } else if (message === '#endquiz') {
-      endQuiz();
-      // say count out loud.
-      //const sayCount = new SpeechSynthesisUtterance(Object.keys(users).length);
-      //window.speechSynthesis.speak(sayCount);
-    } else if (message === '#reset') {
-      reset();
+  client.connect().then(() => {
+    statusElement.textContent = possMex[Math.floor(Math.random()*possMex.length)];
+  });
+
+  client.on('message', (wat, tags, message, self) => {
+
+    if (self) return;
+    const { username } = tags;
+    //if (username.toLowerCase() === channel) {
+      //comandi per Nico
+      if (message === '#startquiz') {
+        startQuiz();
+      } else if (message === '#endquiz') {
+        endQuiz();
+        // say count out loud.
+        //const sayCount = new SpeechSynthesisUtterance(Object.keys(users).length);
+        //window.speechSynthesis.speak(sayCount);
+      } else if (message === '#reset') {
+        reset();
+      }
+    //}
+
+    const regE=/^[#]\d+$/gm;
+
+    if (listeningForCount && (message).match(regE) && !(tags.username in users)) {
+      responses(tags,message);
     }
-  //}
-
-  const regE=/^[#]\d+$/gm;
-
-  if (listeningForCount && (message).match(regE) && !(tags.username in users)) {
-    responses(tags,message);
-  }
-});
-
+  });
+}
 // ecco cosa intendevo la logica dentro ogni if conviene metterle in funzioni apposite così da snellire tutta
 // la parte degli if
 

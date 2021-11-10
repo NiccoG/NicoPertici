@@ -6,7 +6,7 @@
   <title>Las Vegas Quiz</title>
   <link rel="stylesheet" href="https://ez-css.now.sh">
 </head>
-<body style="background-color: black;color: yellow;">
+<body onload="main();" style="background-color: black;color: yellow;">
   <!--<center><img src="NicoNudo.jpg" alt="OAH" width="500"/></center>-->
   <input id="groda" type="text" placeholder="Inserisci qua la risposta prima di #endquiz"></input>
   <div>
@@ -26,6 +26,8 @@
   <p id="vincitore" style="color:rgb(43, 226, 43)"></p>
   <script src="tmi.min.js"></script>
   <script src="app.js"></script>
-  <a href="class.html">Classifica</a>
+  <button onclick="doe();">Download Classifica</button>
+  <textarea id="paolo" style="scroll-behavior: auto;width: fit-content;height: fit-content;"></textarea>
+  <button onclick="textToClasss(document.getElementById('paolo').value);">Upload Classifica</button>
 </body>
 </html>
