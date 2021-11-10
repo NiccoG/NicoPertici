@@ -47,6 +47,12 @@ function sToTable(){
   document.getElementById("class").innerHTML=str;
 }
 */
+function vittoria(elem){
+  if (elem==[]) document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
+  document.getElementById("vincitore").innerHTML="Il vincitore è "+elem[0]+" con "+elem[1];
+  if(elem[0] in classs) classs[elem[0]]++
+  else  classs[elem[0]]=1
+}
 function updateClass(){
   CString="";
   for(let nome in classs){
@@ -67,7 +73,13 @@ function endQuiz(){
   let risposta= document.getElementById("groda").value; 
   
   for(let i=0; i<arr.length; i++){
+    if(Number(arr[i][1])>Number(risposta))
+      if(i==0) vittoria([]);
+      else vittoria(arr[i-1])
+    else if(i==arr.length-1) vittoria(arr[i]);
+    /*
     if(Number(arr[i][1]) > Number(risposta) && i!=0){
+      
       let j = i;
       check = Number(arr[i-1][1]);
       
@@ -75,6 +87,7 @@ function endQuiz(){
         vincitori.push(arr[j-1]);
         j--;
       }
+      
       //document.getElementById("vincitore").innerHTML="Il vincitore è "+arr[i-1][0]+" con "+arr[i-1][1];
     
     }else if( i == arr.length-1 ){
@@ -86,16 +99,18 @@ function endQuiz(){
       }
       //document.getElementById("vincitore").innerHTML="Il vincitore è "+arr[i][0]+" con "+arr[i][1];
     }
-    
+    */
   }
-
-  if(Number(vincitori[0][1])>Number(risposta))
+  /*
+  if(!vincitori.length)
     document.getElementById("vincitore").innerHTML="Nooo, l'avete sparata tutti troppo grande, non ha vinto nessuno. SADGE";
-  else if(vincitori.length==1){
+  else{
     document.getElementById("vincitore").innerHTML="Il vincitore è "+vincitori[0][0]+" con "+vincitori[0][1];
     if(vincitori[0][0] in classs) classs[vincitori[0][0]]++
     else  classs[vincitori[0][0]]=1
   }
+  */
+  /*
   else {
     document.getElementById("vincitore").innerHTML+="I vincitori sono:\n"
     for(let i in vincitori){
@@ -105,6 +120,7 @@ function endQuiz(){
     }
     document.getElementById("vincitore").innerHTML+="con "+vincitori[0][1]+"\n"
   }
+  */
   updateClass();
 }
 function startQuiz(){
@@ -115,8 +131,8 @@ function responses(tags,message){
   var sR="";
   users[tags.username] = (message).substring(1);
   countElement.textContent = "Numero risposte: " + Object.keys(users).length; 
-  arr=Object.keys(users).map(key=>[key,users[key]]);
-  arr.sort((a,b)=>a[1]-b[1]);
+  arr=Object.keys(users).map(key=>[key,users[key],tags[timer]]);
+  arr.sort((a,b)=>a[1]!=b[1]?a[1]-b[1]:b[2]-a[2]);
     
   sR = arr[0][0]+": " + arr[0][1];
   for(let i=1; i < arr.length; i++){
@@ -131,7 +147,7 @@ let arr=[];
 let vincitori=[];
 let check;
 let classs={};
-
+const timer="tmi-sent-ts"
 function main(){
 
   client.connect().then(() => {
@@ -139,7 +155,7 @@ function main(){
   });
 
   client.on('message', (wat, tags, message, self) => {
-
+    
     if (self) return;
     const { username } = tags;
     //if (username.toLowerCase() === channel) {
